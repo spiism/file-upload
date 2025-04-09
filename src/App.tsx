@@ -1,6 +1,6 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import FileUploadTracker from "./components/FileUploadTracker";
 
 function App() {
   return (
@@ -8,6 +8,7 @@ function App() {
         <h1 className="text-3xl font-bold underline text-red-200">
           Hello world!
         </h1>
+          <FileUploadTracker/>
       </div>
   );
 }
