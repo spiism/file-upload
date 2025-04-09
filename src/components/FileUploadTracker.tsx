@@ -12,7 +12,18 @@ interface Task {
 export default function FileUploadTracker() {
     const [tasks, setTasks] = useState<Task[]>([]);
 
+    //Reject files that aren’t PDFs or images under 2MB
+    const validateFile = (file: File) => {
+        const isValidType = file.type === "application/pdf" || file.type.startsWith("image/");
+        const isValidSize = file.size < 2 * 1024 * 1024;
+        return isValidType && isValidSize;
+    };
+
     const addTask = (file: File) => {
+        if (!validateFile(file)) {
+            alert("Only PDFs and images under 2MB are allowed.");
+            return;
+        }
         const taskId = uuidv4();
         const newTask: Task = {
             id: taskId,
