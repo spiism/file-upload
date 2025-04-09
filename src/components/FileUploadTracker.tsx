@@ -91,6 +91,19 @@ export default function FileUploadTracker() {
         );
     };
 
+    const cancelTask = (taskId: string) => {
+        setTasks(prev => {
+            return prev.map(task => {
+                if (task.id === taskId && task.intervalId) {
+                    clearInterval(task.intervalId);
+                    return { ...task, status: "cancelled" };
+                }
+                return task;
+            });
+        });
+    };
+
+
     return (
         <div className="">
             <h1 className="text-xl font-bold mb-4">File Upload Tracker</h1>
@@ -117,6 +130,14 @@ export default function FileUploadTracker() {
                             <div className="font-medium">{task.name}</div>
                             <div className="text-xs">Status: {task.status}</div>
                         </div>
+                        {task.status === "processing" && (
+                            <button
+                                className="text-red-500 text-xs ml-2"
+                                onClick={() => cancelTask(task.id)}
+                            >
+                                Cancel
+                            </button>
+                        )}
                     </div>
                 ))}
             </div>
