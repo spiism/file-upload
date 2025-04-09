@@ -38,6 +38,21 @@ export default function FileUploadTracker() {
             retries: 0
         };
         setTasks(prev => [...prev, newTask]);
+        simulateStartTask(taskId);
+    };
+
+    //simulate API starts processing the task
+    const simulateStartTask = (taskId: string) => {
+        updateTaskStatus(taskId, "processing");
+    };
+
+    //update task status
+    const updateTaskStatus = (taskId: string, status: Task["status"]) => {
+        setTasks(prev =>
+            prev.map(task =>
+                task.id === taskId ? { ...task, status, retries: status === "processing" ? task.retries : 0 } : task
+            )
+        );
     };
 
     return (
