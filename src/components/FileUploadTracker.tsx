@@ -7,6 +7,7 @@ interface Task {
     name: string;
     status: "pending" | "processing" | "success" | "failed" | "cancelled";
     retries: number;
+    intervalId?: NodeJS.Timeout;
 }
 
 export default function FileUploadTracker() {
@@ -44,6 +45,41 @@ export default function FileUploadTracker() {
     //simulate API starts processing the task
     const simulateStartTask = (taskId: string) => {
         updateTaskStatus(taskId, "processing");
+        //2s interval to simulate polling
+        const intervalId = setInterval(() => pollStatus(taskId), 2000);
+        setTasks(prev =>
+            prev.map(task => (task.id === taskId ? { ...task, intervalId } : task))
+        );
+    };
+
+
+    const pollStatus = (taskId: string) => {
+        setTasks(prev => {
+            return prev.map(task => {
+                if (task.id !== taskId || task.status !== "processing") return task;
+
+                if (task.retries >= 3) {
+                    clearInterval(task.intervalId);
+                    return { ...task, status: "failed" };
+                }
+
+                //10% fail
+                const shouldFail = Math.random() < 0.1;
+                //30% success
+                const shouldSucceed = Math.random() < 0.3;
+
+                if (shouldFail) {
+                    return { ...task, retries: task.retries + 1 };
+                }
+
+                if (shouldSucceed) {
+                    clearInterval(task.intervalId);
+                    return { ...task, status: "success" };
+                }
+
+                return { ...task, retries: task.retries + 1 };
+            });
+        });
     };
 
     //update task status
@@ -70,6 +106,20 @@ export default function FileUploadTracker() {
             {errorMessage && (
                 <div className="text-red-600 text-sm mb-4">{errorMessage}</div>
             )}
+
+            <div className="space-y-2">
+                {tasks.map(task => (
+                    <div
+                        key={task.id}
+                        className="p-2 border rounded flex justify-between items-center text-sm"
+                    >
+                        <div>
+                            <div className="font-medium">{task.name}</div>
+                            <div className="text-xs">Status: {task.status}</div>
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }
