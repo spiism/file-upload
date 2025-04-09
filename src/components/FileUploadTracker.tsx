@@ -103,6 +103,22 @@ export default function FileUploadTracker() {
         });
     };
 
+    const statusColor = (status: Task["status"]) => {
+        switch (status) {
+            case "success":
+                return "text-green-600";
+            case "failed":
+                return "text-red-600";
+            case "cancelled":
+                return "text-yellow-500";
+            case "processing":
+                return "text-blue-500";
+            case "pending":
+                return "text-gray-400";
+        }
+    };
+
+
 
     return (
         <div className="max-w-md mx-auto p-4 bg-white rounded-2xl shadow-lg">
@@ -134,7 +150,9 @@ export default function FileUploadTracker() {
                     >
                         <div>
                             <div className="font-semibold text-gray-800">{task.name}</div>
-                            <div className="text-xs text-gray-500">Status: {task.status}</div>
+                            <div className={`text-xs ${statusColor(task.status)}`}>
+                                Status: {task.status}
+                            </div>
                         </div>
 
                         {task.status === "processing" && (
