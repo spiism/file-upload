@@ -105,8 +105,11 @@ export default function FileUploadTracker() {
 
 
     return (
-        <div className="">
-            <h1 className="text-xl font-bold mb-4">File Upload Tracker</h1>
+        <div className="max-w-md mx-auto p-4 bg-white rounded-2xl shadow-lg">
+            <h1 className="text-2xl font-bold mb-4 text-center text-gray-800">
+                File Upload Tracker
+            </h1>
+
             <input
                 type="file"
                 ref={fileInputRef}
@@ -114,25 +117,29 @@ export default function FileUploadTracker() {
                     const file = e.target.files?.[0];
                     if (file) addTask(file);
                 }}
-                className="mb-2 block w-full"
+                className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
             />
+
             {errorMessage && (
-                <div className="text-red-600 text-sm mb-4">{errorMessage}</div>
+                <div className="text-red-600 text-sm mt-2 text-center">
+                    {errorMessage}
+                </div>
             )}
 
-            <div className="space-y-2">
-                {tasks.map(task => (
+            <div className="mt-6 space-y-3">
+                {tasks.map((task) => (
                     <div
                         key={task.id}
-                        className="p-2 border rounded flex justify-between items-center text-sm"
+                        className="p-3 rounded-xl border flex justify-between items-center bg-gray-50 hover:shadow"
                     >
                         <div>
-                            <div className="font-medium">{task.name}</div>
-                            <div className="text-xs">Status: {task.status}</div>
+                            <div className="font-semibold text-gray-800">{task.name}</div>
+                            <div className="text-xs text-gray-500">Status: {task.status}</div>
                         </div>
+
                         {task.status === "processing" && (
                             <button
-                                className="text-red-500 text-xs ml-2"
+                                className="ml-4 text-xs text-red-500 hover:text-red-700"
                                 onClick={() => cancelTask(task.id)}
                             >
                                 Cancel
